@@ -2,6 +2,7 @@ require("dotenv").config();
 var Spotify = require('node-spotify-api');
 var axios = require('axios');
 var moment = require('moment');
+var fs = require('fs');
 var keys = require("./keys.js");
 
 // Function to look up concert
@@ -28,7 +29,15 @@ var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_i
     });
 }
 
+// Function to read what .txt says
 
+var doWhatSays = function(){
+    fs.readFile('random.txt', 'utf8', function(err, data){
+        if(err)throw(err);
+        var dataArray = data.split(",");
+        runLiri(dataArray[0], dataArray[1]);
+    });
+}
 
 // Function to look up movie
 
@@ -97,6 +106,11 @@ var runLiri = function(caseData, functionData){
         case 'concert-this':
             concert(functionData);
             break;
+        case 'do-what-it-says':
+            doWhatSays();
+            break;
+        default:
+            console.log('LiRi does not know that');
     }
 }
 
