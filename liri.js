@@ -4,20 +4,44 @@ var axios = require('axios');
 var moment = require('moment');
 var keys = require("./keys.js");
 
+// Function to look up concert
+var concert = function(){
+    var nodeArgs = process.argv;
+    var artist = "";
+    for (var i = 3; i < nodeArgs.length; i++) {
+        if (i > 3 && i < nodeArgs.length) {
+            artist = artist + "+" + nodeArgs[i];
+        } else{
+            artist += nodeArgs[i];
+        }
+    }
+var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+    axios.get(queryUrl).then(function(response){
+        console.log('------------------------');
+        console.log('Venue: ' + response.data[0].venue.name);
+        console.log('Location: ' + response.data[0].venue.city + ', ' + response.data[0].venue.country);
+        var date = response.data[0].datetime;
+        var convertedDate = moment(date).format('l');
+        console.log('Date: ' + convertedDate);
+        console.log('------------------------');
+    });
+}
+
+
 
 // Function to look up movie
 
 var movie = function(){
-var nodeArgs = process.argv;
-
-var movieName = "";
-for (var i = 3; i < nodeArgs.length; i++) {
-  if (i > 3 && i < nodeArgs.length) {
-    movieName = movieName + "+" + nodeArgs[i];
-  } else {
-    movieName += nodeArgs[i];
-  }
-}
+    var nodeArgs = process.argv;
+    var movieName = "";
+    for (var i = 3; i < nodeArgs.length; i++) {
+        if (i > 3 && i < nodeArgs.length) {
+        movieName = movieName + "+" + nodeArgs[i];
+        } else {
+            movieName += nodeArgs[i];
+        }
+    }
 var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
 axios.get(queryUrl).then(function(response){
@@ -69,6 +93,9 @@ var runLiri = function(caseData, functionData){
             break;
         case 'movie-this':
             movie(functionData);
+            break;
+        case 'concert-this':
+            concert(functionData);
             break;
     }
 }
